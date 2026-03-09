@@ -58,8 +58,17 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.8, duration: 0.5 }}
-            className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full sm:w-auto"
+            className="mt-12 flex items-center justify-center"
           >
+            {/* ── COMING SOON MODE ── Remove this button and uncomment the two below when going live */}
+            <button
+              disabled
+              className="border-2 border-white text-white font-semibold text-lg px-12 py-4 opacity-60 cursor-default tracking-wide"
+            >
+              Coming Soon
+            </button>
+
+            {/* ── LIVE MODE ── Uncomment when ready to launch
             <motion.div whileTap={{ scale: 0.97 }}>
               <MovingBorderButton
                 onClick={() => router.push("/auth")}
@@ -79,6 +88,7 @@ export default function LandingPage() {
                 Post a Listing
               </MovingBorderButton>
             </motion.div>
+            ── END LIVE MODE ── */}
           </motion.div>
         </div>
       </div>
