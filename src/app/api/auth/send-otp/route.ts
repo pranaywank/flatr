@@ -17,21 +17,26 @@ export async function POST(req: NextRequest) {
         }
 
         if (!adminDb) {
-            return NextResponse.json({ error: 'Internal Server Error: DB not initialized' }, { status: 500 });
+            console.error('[send-otp] Firebase Admin DB is null — check FIREBASE_SERVICE_ACCOUNT_KEY env var');
+            return NextResponse.json({ error: 'Server configuration error: DB not initialized' }, { status: 500 });
         }
 
         const otp = generateOTP();
-        // Expiration set to 15 minutes from now
         const expiresAt = Date.now() + 15 * 60 * 1000;
 
-        // Store OTP in a temporary Firestore collection based on email
-        await adminDb.collection('otps').doc(email).set({
-            otp,
-            expiresAt,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+        // 1. Write OTP to Firestore
+        try {
+            await adminDb.collection('otps').doc(email).set({
+                otp,
+                expiresAt,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+        } catch (dbErr: any) {
+            console.error('[send-otp] Firestore write failed:', dbErr.message);
+            return NextResponse.json({ error: `Database error: ${dbErr.message}` }, { status: 500 });
+        }
 
-        // Send the email using Resend
+        // 2. Send email via Resend
         const { data, error } = await resend.emails.send({
             from: `Flatr <${SENDER_EMAIL}>`,
             to: email,
@@ -49,14 +54,14 @@ export async function POST(req: NextRequest) {
         });
 
         if (error) {
-            console.error('Resend error:', error);
-            return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+            console.error('[send-otp] Resend error:', JSON.stringify(error));
+            return NextResponse.json({ error: `Email sending failed: ${error.message}` }, { status: 500 });
         }
 
         return NextResponse.json({ success: true, message: 'OTP sent successfully' });
 
     } catch (error: any) {
-        console.error('Error in send-otp:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        console.error('[send-otp] Unhandled error:', error.message, error.stack);
+        return NextResponse.json({ error: `Internal server error: ${error.message}` }, { status: 500 });
     }
 }
