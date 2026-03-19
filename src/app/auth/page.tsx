@@ -47,11 +47,11 @@ function AuthForm() {
             >
                 {/* Logo */}
                 <div className="mb-12 text-center">
-                    <span className="text-2xl font-bold tracking-tight cursor-pointer" onClick={() => router.push("/")}>Flatr</span>
+                    <span className="text-6xl font-bold tracking-tight cursor-pointer" onClick={() => router.push("/")}>Flatr</span>
                 </div>
 
                 <div className="space-y-2 mb-10">
-                    <h1 className="text-4xl font-black tracking-tight">Welcome back.</h1>
+                    <h1 className="text-4xl font-black tracking-tight">Welcome.</h1>
                     <p className="text-black/50 text-lg">Enter your email and we'll send you a login code.</p>
                 </div>
 
