@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ImageUpload } from '@/components/ui/ImageUpload';
 import { AppHeader } from '@/components/ui/AppHeader';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/hooks/useAuth';
 
@@ -32,6 +32,7 @@ function FormSection({ children, delay = 0 }: { children: React.ReactNode; delay
 export default function ListPage() {
     const router = useRouter();
     const { user, loading } = useAuth();
+    const [hasListings, setHasListings] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitDone, setSubmitDone] = useState(false);
 
@@ -44,6 +45,19 @@ export default function ListPage() {
     const [description, setDescription] = useState('');
     const [photos, setPhotos] = useState<string[]>([]);
     const [whatsapp, setWhatsapp] = useState('');
+
+    // Check if user already has listings
+    useEffect(() => {
+        if (!user) return;
+        const q = query(
+            collection(db, 'listings'),
+            where('userId', '==', user.uid),
+            limit(1)
+        );
+        getDocs(q).then((snapshot) => {
+            setHasListings(!snapshot.empty);
+        });
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -91,7 +105,7 @@ export default function ListPage() {
 
     return (
         <>
-            <AppHeader backHref="/dashboard" backLabel="Browse" />
+            <AppHeader backHref="/dashboard" backLabel="Browse" showMyListings={hasListings} />
             <div className="max-w-2xl mx-auto px-6 py-12">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                     <h1 className="text-4xl font-black tracking-tight mb-2">Post a flat.</h1>

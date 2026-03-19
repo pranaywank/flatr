@@ -62,7 +62,7 @@ function OnboardingContent() {
         <main className="flex flex-col items-center justify-center min-h-screen bg-white text-black px-6 overflow-hidden">
             {/* Logo */}
             <div className="absolute top-6 left-8">
-                <span className="text-2xl font-bold tracking-tight cursor-pointer" onClick={() => router.push("/")}>Flatr</span>
+                <span className="text-2xl font-bold tracking-tight cursor-pointer" onClick={() => router.push("/dashboard")}>Flatr</span>
             </div>
 
             <motion.div

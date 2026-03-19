@@ -16,7 +16,7 @@ export function AppHeader({ backHref, backLabel, showMyListings = true }: AppHea
             <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
                 <div
                     className="font-bold text-xl tracking-tight cursor-pointer"
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push('/dashboard')}
                 >
                     Flatr
                 </div>

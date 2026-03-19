@@ -120,7 +120,7 @@ export default function DashboardPage() {
             {/* Floating Nav */}
             <FloatingNav
                 rightSlot={addListingButton}
-                logo={<span className="cursor-pointer" onClick={() => router.push('/')}>Flatr</span>}
+                logo={<span className="cursor-pointer" onClick={() => router.push('/dashboard')}>Flatr</span>}
             />
 
             {/* Filter Bar — below nav with top padding */}
